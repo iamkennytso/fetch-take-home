@@ -1,0 +1,59 @@
+.textInputContainer {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 4px);
+  margin-top: 24px;
+}
+
+.textInputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.textInputLabel {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #999;
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.textInputLabelFocused {
+  top: -0.75rem;
+  font-size: 0.75rem;
+  color: #007bff;
+}
+
+.textInputField {
+  width: calc(100% - 1.5rem);
+
+  padding: 0.75rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease-in-out;
+
+  &:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  }
+
+  &:disabled {
+    background-color: #f0f0f0;
+    border-color: #ddd;
+    cursor: not-allowed;
+  }
+}
+
+.textInputError {
+  border-color: #e63946;
+}
+
+.textInputErrorMessage {
+  font-size: 0.875rem;
+  color: #e63946;
+}

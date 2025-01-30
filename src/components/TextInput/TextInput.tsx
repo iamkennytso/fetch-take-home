@@ -1,0 +1,53 @@
+import React, { useState } from 'react';
+import classNames from 'classnames';
+import styles from './TextInput.module.scss';
+
+interface TextInputProps {
+  label?: string;
+  value: string;
+  onChange: (value: string) => void;
+  className?: string;
+  error?: string;
+  isDisabled?: boolean;
+  type?: string;
+}
+
+const TextInput: React.FC<TextInputProps> = ({
+  label,
+  value,
+  onChange,
+  className,
+  error,
+  isDisabled = false,
+  type = 'text'
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
+
+  return (
+    <div className={classNames(styles.textInputContainer, className)}>
+      <div className={styles.textInputWrapper}>
+        {label && (
+          <label
+            className={classNames(styles.textInputLabel, {
+              [styles.textInputLabelFocused]: isFocused || value,
+            })}
+          >
+            {label}
+          </label>
+        )}
+        <input
+          type={type}
+          className={classNames(styles.textInputField, { [styles.textInputError]: error })}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          disabled={isDisabled}
+        />
+      </div>
+      {error && <span className={styles.textInputErrorMessage}>{error}</span>}
+    </div>
+  );
+};
+
+export default TextInput;
