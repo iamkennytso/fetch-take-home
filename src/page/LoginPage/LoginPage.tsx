@@ -1,37 +1,30 @@
 import { useState } from 'react';
 import { Button, TextInput } from '../../components';
 import styles from './LoginPage.module.scss';
-import axios from 'axios';
-import { API_URL } from '../../consts/consts';
 import { isValidEmail } from '../../utils/isValidEmail';
+import { useDogApi } from '../../hooks/useDogApi';
 
 type LoginPageProps = {
   handleLoginSuccess: () => void
 }
 
-type LoginRequestBody = {
-  email: string;
-  name: string;
-};
 
-type LoginRequestConfig = {
-  withCredentials: boolean;
-}
 
 const LoginPage: React.FC<LoginPageProps> = ({handleLoginSuccess}) =>{
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [subtitle, setSubtitle] = useState('Please login!')
-  const [loading, setLoading] = useState(false)
+  const [name, setName] = useState<string>('')
+  const [email, setEmail] = useState<string>('')
+  const [subtitle, setSubtitle] = useState<string>('Please login!')
+  const [loading, setLoading] = useState<boolean>(false)
+  const { userLogin } = useDogApi()
 
-  const handleOnClick = async () => {
+  const handleSubmit = async () => {
     try {
       setLoading(true)
-      const requestBody: LoginRequestBody = { name, email }
-      const requestConfig: LoginRequestConfig = { withCredentials: true }
-      const loginResponse = await axios.post(`${API_URL}/auth/login`, requestBody, requestConfig)
-      if (loginResponse?.status === 200) {
-        handleLoginSuccess
+      const userLoginSuccess = await userLogin(name, email)
+      if (userLoginSuccess) {
+        handleLoginSuccess()
+      } else {
+        throw new Error
       }
     } catch (e) {
       console.error(e)
@@ -48,13 +41,13 @@ const LoginPage: React.FC<LoginPageProps> = ({handleLoginSuccess}) =>{
       <div className={styles.contentContainer}>
         <h1>Welcome to "We Love Dogs"!</h1>
         <h2>{subtitle}</h2>
-        <div className={styles.inputsContainer}>        
-          <TextInput value={name} onChange={val => setName(val)} label='Name' />
-          <TextInput value={email} onChange={val => setEmail(val)} label='E-mail' type='email' />
+        <form className={styles.inputsContainer} onSubmit={handleSubmit}>        
+          <TextInput value={name} onChange={val => setName(val)} label='Name' className={styles.input} />
+          <TextInput value={email} onChange={val => setEmail(val)} label='E-mail' type='email' className={styles.input} />
           <div className={styles.buttonContainer}>
-            <Button label='Login' onClick={handleOnClick} isDisabled={!isFormValid || loading} />
+            <Button label='Login' onClick={handleSubmit} isDisabled={!isFormValid || loading} />
           </div>
-        </div>
+        </form>
       </div>
     </div>
   )

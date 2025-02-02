@@ -10,6 +10,8 @@ interface TextInputProps {
   error?: string;
   isDisabled?: boolean;
   type?: string;
+  onFocus?: () => void;
+  placeholder?: string;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -19,9 +21,16 @@ const TextInput: React.FC<TextInputProps> = ({
   className,
   error,
   isDisabled = false,
-  type = 'text'
+  type = 'text',
+  onFocus,
+  placeholder = ''
 }) => {
   const [isFocused, setIsFocused] = useState(false);
+
+  const handleOnFocus = () => {
+    setIsFocused(true)
+    onFocus && onFocus()
+  }
 
   return (
     <div className={classNames(styles.textInputContainer, className)}>
@@ -40,9 +49,10 @@ const TextInput: React.FC<TextInputProps> = ({
           className={classNames(styles.textInputField, { [styles.textInputError]: error })}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setIsFocused(true)}
+          onFocus={handleOnFocus}
           onBlur={() => setIsFocused(false)}
           disabled={isDisabled}
+          placeholder={placeholder}
         />
       </div>
       {error && <span className={styles.textInputErrorMessage}>{error}</span>}
