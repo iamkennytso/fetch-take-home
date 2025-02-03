@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect, ChangeEvent } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styles from './MultiSelect.module.scss';
 import { TextInput } from '../TextInput';
-import { Button } from '../Button';
 
 export interface MultiSelectProps<T> {
   options: T[];
@@ -53,7 +52,6 @@ export default function MultiSelect<T>({
     <div ref={containerRef} className={styles.container}>
       <div
         className={styles.inputContainer}
-        // onClick={() => setDropdownVisible(true)}
       >
         <TextInput
           type="text"

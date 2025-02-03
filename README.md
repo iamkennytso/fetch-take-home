@@ -2,6 +2,10 @@
 
 [Instructions here.](https://frontend-take-home.fetch.com/)
 
+
+[Deployed here](https://kentsotakehome.web.app/)
+At least for now
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
