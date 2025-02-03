@@ -1,0 +1,51 @@
+$highlights: #ff69b4;
+$border: #ffb6c1;
+
+.table {
+  table-layout: fixed;
+  width: 100%;
+  
+  th, td {
+    border: 2px solid $border;
+    padding: 12px;
+    text-align: left;
+  }
+
+  th {
+    background-color: $highlights;
+    color: #fff;
+    border: 2px solid $border;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  td {
+    background-color: #fff0f5;
+    color: #333;
+    border: 2px solid $border;
+    padding: 12px;
+    text-align: left;
+  }
+
+  tr:nth-child(even) td {
+    background-color: #ffe4e1;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 16px 0;
+  padding: 0 20%;
+
+  .pageText {
+    color: $highlights;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 0 30px;
+    min-width: 200px;
+    text-align: center;
+  }
+}

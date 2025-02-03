@@ -11,7 +11,7 @@ interface LoginRequestConfig {
   withCredentials: boolean;
 }
 
-interface SearchDogsParams {
+export interface SearchDogsParams {
   breeds?: string[],
   zipCodes?: number[],
   ageMin?: number,
@@ -21,10 +21,15 @@ interface SearchDogsParams {
   sort?: string
 }
 
-interface GetDogsSearchResponse {
+interface GetDogsIdSearchResponse {
   resultIds: string[],
   next: string,
-  totla: number
+  total: number
+}
+
+interface GetDogsSearchResponse {
+  dogs: Dog[],
+  total: number;
 }
 
 export interface Dog {
@@ -73,24 +78,28 @@ export const useDogApi = () => {
     }
   }
 
-  const searchDogs = async(params: SearchDogsParams): Promise<Dog[]> => {
+  const searchDogs = async(params: SearchDogsParams): Promise<GetDogsSearchResponse> => {
     try {
-      const getDogIdsResponse = await axios.get<GetDogsSearchResponse>(`${API_URL}/dogs/search`, {
+      const getDogIdsResponse = await axios.get<GetDogsIdSearchResponse>(`${API_URL}/dogs/search`, {
         ...requestConfig,
-        ...params
+        params,
       })
-      const { resultIds } = getDogIdsResponse.data
-      console.log(resultIds)
+      const { resultIds, total } = getDogIdsResponse.data
       const getDogsResponse = await axios.post<Dog[]>(`${API_URL}/dogs`, [
         ...resultIds
       ], {
         ...requestConfig,
       })
-      console.log(getDogsResponse)
-      return getDogsResponse.data
+      return {
+        dogs: getDogsResponse.data,
+        total,
+      }
     } catch (e) {
       console.error('Error searching dogs', e)
-      return []
+      return {
+        dogs: [],
+        total: 0
+      }
     }
   }
 
