@@ -15,6 +15,7 @@ export interface Column<T> {
   sortable?: boolean
   type?: CellTypes | null
   meta?: { property: string }
+  onClick?: Function
 }
 
 interface TableProps<T> {
@@ -44,9 +45,11 @@ function Table<T>({
   sortBy,
   sortDir
 }: TableProps<T>): JSX.Element {
-  if (!data.length) return <div>Search for some dogs!</div>
+  // todo: activity indicator
   if (loading) return <div>Loading...</div>
 
+  // it's not the greatest looking, especially how the columns are all the same width
+  // improve on design
   return (
     <>
       <table className={styles.table}>

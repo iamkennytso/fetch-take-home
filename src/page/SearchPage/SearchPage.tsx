@@ -13,6 +13,7 @@ type LoginPageProps = {
 const PAGE_SIZE = 25
 
 const tableColumns: Column<Dog>[] = [
+  { header: 'Favorite', accessor: 'fav', type: CellTypes.Favorite},
   { header: 'Image', accessor: 'img', type: CellTypes.Image },
   { header: 'Name', accessor: 'name', sortable: true },
   { header: 'Age', accessor: 'age', sortable: true },
@@ -25,7 +26,7 @@ const SearchPage: React.FC<LoginPageProps> = ({ handleApiFail }) => {
   const [selectedBreeds, setSelectedBreeds] = useState<string[]>([])
   const [loadingSearchResults, setLoadingSearchResults] = useState<boolean>(false)
   const [searchResults, setSearchResults] = useState<Dog[]>([])
-  const [sortBy, setSortBy] = useState<keyof Dog | null>(null);
+  const [sortBy, setSortBy] = useState<keyof Dog | null>('breed');
   const [sortDir, setSortDir] = useState<SortDirection>(SortDirection.Asc);
   const [page, setPage] = useState<number>(1)
   const [totalPages, setTotalPages] = useState<number>(1)
@@ -42,10 +43,7 @@ const SearchPage: React.FC<LoginPageProps> = ({ handleApiFail }) => {
   }, [])
 
   useEffect(() => {
-    if (!selectedBreeds.length) return
-    (async () => {
-      await handleSearch()
-    })()
+    handleSearch()
   }, [sortBy, sortDir, page])
 
   const handleSearch = async () => {
@@ -57,9 +55,17 @@ const SearchPage: React.FC<LoginPageProps> = ({ handleApiFail }) => {
     if (page !== 1) {
       searchParams.from = (page - 1) * PAGE_SIZE
     }
-    console.log(searchParams)
     const resultsPayload = await searchDogs(searchParams)
     const { dogs, total } = resultsPayload
+    // temporary solution to remember favorites
+    // won't work for multiple users
+    const localFavorites: Record<string, boolean> = JSON.parse(localStorage.getItem('favDogs') || '{}');
+    console.log(localFavorites)
+    for (let dog of dogs) {
+      if (localFavorites[dog.id]) {
+        dog.fav = true
+      }
+    }
     setSearchResults(dogs)
     const newTotal = Math.floor(total / 25) + 1
     if (total !== newTotal) {

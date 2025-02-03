@@ -39,6 +39,7 @@ export interface Dog {
   age: number
   zip_code: string
   breed: string
+  fav?: boolean
 }
 
 const requestConfig: LoginRequestConfig = { withCredentials: true }
@@ -47,7 +48,6 @@ export const useDogApi = () => {
   const userLogin = async (name: string, email: string): Promise<boolean> => {
     try {
       const requestBody: LoginRequestBody = { name, email }
-      
       const loginResponse = await axios.post(`${API_URL}/auth/login`, requestBody, requestConfig)
       if (loginResponse?.status === 200) {
         return true
