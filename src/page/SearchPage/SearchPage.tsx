@@ -30,7 +30,7 @@ const SearchPage: React.FC<LoginPageProps> = ({ handleApiFail }) => {
   const [sortDir, setSortDir] = useState<SortDirection>(SortDirection.Asc);
   const [page, setPage] = useState<number>(1)
   const [totalPages, setTotalPages] = useState<number>(1)
-  const { getBreeds, searchDogs } = useDogApi()
+  const { getBreeds, searchDogs, matchDog } = useDogApi()
 
   useEffect(() => {
     (async () => {
@@ -60,7 +60,7 @@ const SearchPage: React.FC<LoginPageProps> = ({ handleApiFail }) => {
     // temporary solution to remember favorites
     // won't work for multiple users
     const localFavorites: Record<string, boolean> = JSON.parse(localStorage.getItem('favDogs') || '{}');
-    console.log(localFavorites)
+
     for (let dog of dogs) {
       if (localFavorites[dog.id]) {
         dog.fav = true
@@ -68,9 +68,20 @@ const SearchPage: React.FC<LoginPageProps> = ({ handleApiFail }) => {
     }
     setSearchResults(dogs)
     const newTotal = Math.floor(total / 25) + 1
-    if (total !== newTotal) {
-      setTotalPages(newTotal)
-    }
+    setTotalPages(newTotal)
+    setLoadingSearchResults(false)
+  }
+
+  const handleMatch = async () => {
+    // display this better
+    setLoadingSearchResults(true)
+    const favs = JSON.parse(localStorage.getItem('favDogs') || '{}')
+    if (!favs) return
+    const { dogs, total } = await matchDog(Object.keys(favs).filter(key => !!favs[key]))
+    // this is jank
+    dogs[0].fav = true
+    setSearchResults(dogs)
+    setTotalPages(total)
     setLoadingSearchResults(false)
   }
 
@@ -93,6 +104,10 @@ const SearchPage: React.FC<LoginPageProps> = ({ handleApiFail }) => {
     setPage(1);
   }
 
+  // refactor this so it doesn't run on every render
+  const localFavorites: Record<string, boolean> = JSON.parse(localStorage.getItem('favDogs') || '{}');
+  const hasFavs = Object.values(localFavorites).some(val => !!val)
+
   return <div className={styles.page}>
     <div className={styles.contentContainer}>
       <div className={styles.filtersContainer}>
@@ -103,6 +118,7 @@ const SearchPage: React.FC<LoginPageProps> = ({ handleApiFail }) => {
           placeholder="Breeds..."
         />
         <Button label='Search' className={styles.button} onClick={handleSearch} isDisabled={!selectedBreeds.length}/>
+        <Button label='Best Match' className={styles.button} onClick={handleMatch} isDisabled={!hasFavs}/>
       </div>
       <div className={styles.tableContainer}>
         <Table 

@@ -41,7 +41,7 @@ const TextCellRenderer: React.FC<TextCellProps> = ({ val }) => {
   return <span>{val}</span>;
 };
 
-const FavoriteCellRenderer: React.FC<FavoriateCellProps> = ({ val: initialVal, onClick, id}) => {
+const FavoriteCellRenderer: React.FC<FavoriateCellProps> = ({ val: initialVal, id}) => {
   // might break if you click too fast
   // should refactor this to be a pure component
   // logic for favoriting shouldn't be on here either, probably

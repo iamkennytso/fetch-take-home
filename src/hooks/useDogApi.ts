@@ -32,6 +32,10 @@ interface GetDogsSearchResponse {
   total: number;
 }
 
+interface MatchDogReponse {
+  match: string
+}
+
 export interface Dog {
   id: string
   img: string
@@ -103,5 +107,32 @@ export const useDogApi = () => {
     }
   }
 
-  return { userLogin, userLogout, getBreeds, searchDogs }
+  const matchDog = async(favs: string[]): Promise<GetDogsSearchResponse> => {
+    try {
+      const matchDogResponse = await axios.post<MatchDogReponse>(
+        `${API_URL}/dogs/match`, 
+        favs,
+        { ...requestConfig }
+      )
+      const { match } = matchDogResponse.data
+      const total = 1
+      const getDogsResponse = await axios.post<Dog[]>(`${API_URL}/dogs`, [
+        match
+      ], {
+        ...requestConfig,
+      })
+      return {
+        dogs: getDogsResponse.data,
+        total,
+      }
+    } catch (e) {
+      console.error('Error getting dog match', e)
+      return {
+        dogs: [],
+        total: 0
+      }
+    }
+  }
+
+  return { userLogin, userLogout, getBreeds, searchDogs, matchDog }
 }
