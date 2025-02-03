@@ -6,6 +6,9 @@
 [Deployed here](https://kentsotakehome.web.app/)
 At least for now
 
+To install dependancies, `npm install`
+To start dev server, `npm start`
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
