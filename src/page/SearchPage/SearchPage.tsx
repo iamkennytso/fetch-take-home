@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Dog, SearchDogsParams, useDogApi } from '../../hooks/useDogApi'
 import styles from './SearchPage.module.scss'
 import { MultiSelect } from '../../components/MultiSelect'
-import { Button } from '../../components'
+import { Button, TextInput } from '../../components'
 import { Table, Column, DogRowRenderer, CellTypes } from '../../components/Table'
 import { SortDirection } from '../../components/Table'
 
@@ -23,6 +23,8 @@ const tableColumns: Column<Dog>[] = [
 
 const SearchPage: React.FC<LoginPageProps> = ({ handleApiFail }) => {
   const [breeds, setBreeds] = useState<string[]>([])
+  const [ageMin, setAgeMin] = useState<number | undefined>()
+  const [ageMax, setAgeMax] = useState<number | undefined>()
   const [selectedBreeds, setSelectedBreeds] = useState<string[]>([])
   const [loadingSearchResults, setLoadingSearchResults] = useState<boolean>(false)
   const [searchResults, setSearchResults] = useState<Dog[]>([])
@@ -48,7 +50,7 @@ const SearchPage: React.FC<LoginPageProps> = ({ handleApiFail }) => {
 
   const handleSearch = async () => {
     setLoadingSearchResults(true)
-    const searchParams: SearchDogsParams = {breeds: selectedBreeds}
+    const searchParams: SearchDogsParams = { breeds: selectedBreeds, ageMax, ageMin }
     if (sortBy) {
       searchParams.sort = `${sortBy}:${sortDir}`
     }
@@ -117,6 +119,10 @@ const SearchPage: React.FC<LoginPageProps> = ({ handleApiFail }) => {
           onChange={setSelectedBreeds}
           placeholder="Breeds..."
         />
+        <div className={styles.ageInputContainer}>
+          <TextInput label='Age Min' value={String(ageMin)} onChange={val => setAgeMin(val ? Number(val) : undefined)} type='number' />
+          <TextInput label='Age Max' value={String(ageMax)} onChange={val => setAgeMax(val ? Number(val) : undefined)} type='number' />
+        </div>
         <Button label='Search' className={styles.button} onClick={handleSearch} isDisabled={!selectedBreeds.length}/>
         <Button label='Best Match' className={styles.button} onClick={handleMatch} isDisabled={!hasFavs}/>
       </div>
