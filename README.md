@@ -4,10 +4,12 @@
 
 
 [Deployed here](https://kentsotakehome.web.app/)
+
 At least for now
 
 To install dependancies, `npm install`
-To start dev server, `npm start`
+
+To start dev server, `npm run dev`
 
 # React + TypeScript + Vite
 
